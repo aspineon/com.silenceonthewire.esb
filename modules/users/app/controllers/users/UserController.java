@@ -12,6 +12,7 @@ import models.users.User;
 import parsers.users.EmailAndPasswordParser;
 import parsers.users.NewUserParser;
 import parsers.users.PhoneAndPasswordParser;
+import play.Logger;
 import play.mvc.BodyParser;
 import protocols.users.Action;
 import protocols.users.UserProtocol;
@@ -24,6 +25,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 
@@ -52,74 +54,119 @@ public class UserController extends Controller{
                 );
     }
 
-    @BodyParser.Of(NewUserParser.class)
     public CompletionStage<Result> addUser(){
 
-        NewUser newUser = Json.fromJson(request().body().asJson(), NewUser.class);
-        return PatternsCS.ask(userActor, new UserProtocol(Action.ADD_USER, newUser), 1000)
-                .thenApply(response -> (Optional<User>) response).thenApply(
-                        userOptional -> userOptional.map(userToJsonConverter)
-                                .map(currentUser -> ok(Json.toJson(currentUser))).orElse(notAcceptable()));
+        try {
+            NewUser newUser = Json.fromJson(request().body().asJson(), NewUser.class);
+            System.out.println(newUser.email);
+            return PatternsCS.ask(userActor, new UserProtocol(Action.ADD_USER, newUser), 1000)
+                    .thenApply(response -> (Optional<User>) response).thenApply(
+                            userOptional -> userOptional.map(userToJsonConverter)
+                                    .map(currentUser -> ok(Json.toJson(currentUser))).orElse(notAcceptable()));
+        } catch (Exception e){
+
+            Logger.error(e.getMessage(), e);
+            return CompletableFuture.completedFuture(notAcceptable());
+        }
     }
 
-    @BodyParser.Of(NewUserParser.class)
     public CompletionStage<Result> editUser(Long id){
 
-        NewUser newUser = Json.fromJson(request().body().asJson(), NewUser.class);
-        return PatternsCS.ask(userActor, new UserProtocol(Action.EDIT_USER, id, newUser), 1000)
-                .thenApply(response -> (Optional<User>) response).thenApply(
-                        userOptional -> userOptional.map(userToJsonConverter)
-                                .map(currentUser -> ok(Json.toJson(currentUser))).orElse(notAcceptable()));
+        try {
+            NewUser newUser = Json.fromJson(request().body().asJson(), NewUser.class);
+            return PatternsCS.ask(userActor, new UserProtocol(Action.EDIT_USER, id, newUser), 1000)
+                    .thenApply(response -> (Optional<User>) response).thenApply(
+                            userOptional -> userOptional.map(userToJsonConverter)
+                                    .map(currentUser -> ok(Json.toJson(currentUser))).orElse(notAcceptable()));
+        } catch (Exception e){
+
+            Logger.error(e.getMessage(), e);
+            return CompletableFuture.completedFuture(notAcceptable());
+        }
     }
 
     public CompletionStage<Result> deleteUser(Long id){
 
-        return PatternsCS.ask(userActor, new UserProtocol(Action.DELETE_USER, id), 1000)
-                .thenApply(response -> (Optional<User>) response).thenApply(
-                        userOptional -> userOptional.map(userToJsonConverter)
-                                .map(currentUser -> ok(Json.toJson(currentUser))).orElse(notAcceptable()));
+        try {
+            return PatternsCS.ask(userActor, new UserProtocol(Action.DELETE_USER, id), 1000)
+                    .thenApply(response -> (Optional<User>) response).thenApply(
+                            userOptional -> userOptional.map(userToJsonConverter)
+                                    .map(currentUser -> ok(Json.toJson(currentUser))).orElse(notAcceptable()));
+        } catch (Exception e){
+
+            Logger.error(e.getMessage(), e);
+            return CompletableFuture.completedFuture(notAcceptable());
+        }
     }
 
     public CompletionStage<Result> getById(Long id){
 
-        return PatternsCS.ask(userActor, new UserProtocol(Action.GET_BY_ID, id), 1000)
-                .thenApply(response -> (Optional<User>) response).thenApply(
-                        userOptional -> userOptional.map(userToJsonConverter)
-                                .map(currentUser -> ok(Json.toJson(currentUser))).orElse(notFound()));
+        try {
+            return PatternsCS.ask(userActor, new UserProtocol(Action.GET_BY_ID, id), 1000)
+                    .thenApply(response -> (Optional<User>) response).thenApply(
+                            userOptional -> userOptional.map(userToJsonConverter)
+                                    .map(currentUser -> ok(Json.toJson(currentUser))).orElse(notFound()));
+        } catch (Exception e){
+
+            Logger.error(e.getMessage(), e);
+            return CompletableFuture.completedFuture(notAcceptable());
+        }
     }
 
     public CompletionStage<Result> getByEmail(String email){
 
-        return PatternsCS.ask(userActor, new UserProtocol(Action.GET_BY_EMAIL, email), 1000)
-                .thenApply(response -> (Optional<User>) response).thenApply(
-                        userOptional -> userOptional.map(userToJsonConverter)
-                                .map(currentUser -> ok(Json.toJson(currentUser))).orElse(notFound()));
+        try {
+            return PatternsCS.ask(userActor, new UserProtocol(Action.GET_BY_EMAIL, email), 1000)
+                    .thenApply(response -> (Optional<User>) response).thenApply(
+                            userOptional -> userOptional.map(userToJsonConverter)
+                                    .map(currentUser -> ok(Json.toJson(currentUser))).orElse(notAcceptable()));
+        } catch (Exception e){
+
+            Logger.error(e.getMessage(), e);
+            return CompletableFuture.completedFuture(notFound());
+        }
     }
 
     public CompletionStage<Result> getByPhone(String phone){
 
-        return PatternsCS.ask(userActor, new UserProtocol(Action.GET_BY_PHONE, phone), 1000)
-                .thenApply(response -> (Optional<User>) response).thenApply(
-                        userOptional -> userOptional.map(userToJsonConverter)
-                                .map(currentUser -> ok(Json.toJson(currentUser))).orElse(notFound()));
+        try {
+            return PatternsCS.ask(userActor, new UserProtocol(Action.GET_BY_PHONE, phone), 1000)
+                    .thenApply(response -> (Optional<User>) response).thenApply(
+                            userOptional -> userOptional.map(userToJsonConverter)
+                                    .map(currentUser -> ok(Json.toJson(currentUser))).orElse(notFound()));
+        } catch (Exception e){
+            Logger.error(e.getMessage(), e);
+            return CompletableFuture.completedFuture(notAcceptable());
+        }
     }
 
-    @BodyParser.Of(EmailAndPasswordParser.class)
     public CompletionStage<Result> getByEmailAndPassword(){
 
         EmailAndPassword emailAndPassword = Json.fromJson(request().body().asJson(), EmailAndPassword.class);
 
-        return PatternsCS.ask(userActor, new UserProtocol(Action.GET_BY_EMAIL_AND_PASSWORD, emailAndPassword), 1000)
-                .thenApply(response -> (Optional<User>) response).thenApply(userOptional -> userOptional
-                        .map(userToJsonConverter).map(currentUser -> ok(Json.toJson(currentUser))).orElse(notFound()));
+        try {
+            return PatternsCS.ask(userActor, new UserProtocol(Action.GET_BY_EMAIL_AND_PASSWORD, emailAndPassword), 1000)
+                    .thenApply(response -> (Optional<User>) response).thenApply(userOptional -> userOptional
+                            .map(userToJsonConverter).map(currentUser -> ok(Json.toJson(currentUser))).orElse(notFound()));
+        } catch (Exception e) {
+
+            Logger.error(e.getMessage(), e);
+            return CompletableFuture.completedFuture(notAcceptable());
+        }
     }
 
-    @BodyParser.Of(PhoneAndPasswordParser.class)
     public CompletionStage<Result> getByPhoneAndPassword(){
 
         PhoneAndPassword phoneAndPassword = Json.fromJson(request().body().asJson(), PhoneAndPassword.class);
-        return PatternsCS.ask(userActor, new UserProtocol(Action.GET_BY_PHONE_AND_PASSWORD, phoneAndPassword), 1000)
-                .thenApply(response -> (Optional<User>) response).thenApply(userOptional -> userOptional
-                        .map(userToJsonConverter).map(currentUser -> ok(Json.toJson(currentUser))).orElse(notFound()));
+
+        try {
+            return PatternsCS.ask(userActor, new UserProtocol(Action.GET_BY_PHONE_AND_PASSWORD, phoneAndPassword), 1000)
+                    .thenApply(response -> (Optional<User>) response).thenApply(userOptional -> userOptional
+                            .map(userToJsonConverter).map(currentUser -> ok(Json.toJson(currentUser))).orElse(notFound()));
+        } catch (Exception e){
+
+            Logger.error(e.getMessage(), e);
+            return CompletableFuture.completedFuture(notAcceptable());
+        }
     }
 }

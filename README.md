@@ -21,7 +21,7 @@ And then go to http://localhost:9000 to see the running web application.
 ### Add new user
 
 ```
-curl -H "Content-Type: application/json" -X POST -d '{"id": 1, "firstName":"Janek","lastName":"Kowalski","ealski.pl", "phone":"1", "password": "alpha", "isAdmin": true}' http://localhost:9000/api/v1/users/add
+curl -H "Content-Type: application/json" -X POST -d '{"firstName":"Janek","lastName":"Kowalski","email": "jan@kowalski.pl", "phone":"1", "password": "alpha", "isAdmin": "true"}' http://localhost:9000/api/v1/users/add
 ```
 
 ### Update user
