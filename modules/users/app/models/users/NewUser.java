@@ -27,4 +27,7 @@ public class NewUser {
 
     @Constraints.Required
     public boolean isAdmin;
+
+    @Constraints.Required
+    public Long company;
 }

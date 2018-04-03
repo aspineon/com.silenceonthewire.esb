@@ -80,7 +80,7 @@ public class CompanyRepository {
 
             try {
 
-                ebeanServer.insert(company);
+                company.save();
                 return ebeanServer.find(Company.class).setId(company.id).findOneOrEmpty();
             } catch (Exception e) {
 
@@ -98,7 +98,7 @@ public class CompanyRepository {
             Optional<Company> optionalCompany = Optional.empty();
             try {
 
-                ebeanServer.update(company);
+                company.update();
                 transaction.commit();
                 optionalCompany = ebeanServer.find(Company.class).setId(company.id).findOneOrEmpty();
             } catch (Exception e) {

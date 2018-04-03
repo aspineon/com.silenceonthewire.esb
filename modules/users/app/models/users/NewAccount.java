@@ -5,7 +5,7 @@ import play.data.validation.Constraints;
 public class NewAccount {
 
     @Constraints.Required
-    public Long userId;
+    public Long user;
 
     @Constraints.Required
     @Constraints.MaxLength(255)

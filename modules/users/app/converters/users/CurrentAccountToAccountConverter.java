@@ -16,9 +16,10 @@ public class CurrentAccountToAccountConverter implements Function<CurrentAccount
         Finder<Long, User> finder = new Finder<Long, User>(User.class);
 
         Account account = new Account();
+
         account.id = currentAccount.id;
         account.createdAt = currentAccount.createdAt;
-        account.user = finder.byId(currentAccount.userId);
+        account.user = finder.byId(currentAccount.user);
         account.updatedAt = new Date();
         account.ssn = currentAccount.ssn;
         account.taxNumber = currentAccount.taxNumber;

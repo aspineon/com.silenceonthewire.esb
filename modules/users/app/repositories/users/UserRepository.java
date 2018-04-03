@@ -42,8 +42,9 @@ public class UserRepository {
         return supplyAsync(()-> {
 
             try {
-                ebeanServer.insert(user);
-                return ebeanServer.find(User.class).setId(user.id).findOneOrEmpty();
+                user.save();
+                return ebeanServer.find(User.class).where().eq("email", user.email.toLowerCase())
+                        .findOneOrEmpty();
             } catch (Exception e){
 
                 Logger.error(e.getMessage(), e);
@@ -60,7 +61,7 @@ public class UserRepository {
             Optional<User> optionalUser = Optional.empty();
             try {
 
-                ebeanServer.update(user);
+                user.update();
                 txn.commit();
                 optionalUser = ebeanServer.find(User.class).setId(user.id).findOneOrEmpty();
             } catch (Exception e){

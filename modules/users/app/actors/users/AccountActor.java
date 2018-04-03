@@ -96,6 +96,7 @@ public class AccountActor extends AbstractActor {
 
     private Optional<Account> create(Account account){
 
+        Logger.info("Create account actor.");
         try {
 
             return accountRepository.create(account).toCompletableFuture().get();

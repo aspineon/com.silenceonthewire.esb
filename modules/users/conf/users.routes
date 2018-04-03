@@ -2,7 +2,7 @@ GET     /user/all                               controllers.users.UserController
 POST    /user/add                               controllers.users.UserController.addUser()
 PUT     /user/edit/:id                          controllers.users.UserController.editUser(id: Long)
 DELETE  /user/delete/:id                        controllers.users.UserController.deleteUser(id: Long)
-GET     /user/getById                           controllers.users.UserController.getById(id: Long)
+GET     /user/getById/:id                       controllers.users.UserController.getById(id: Long)
 GET     /user/getByEmail/:email                 controllers.users.UserController.getByEmail(email: String)
 GET     /user/getByPhone/:phone                 controllers.users.UserController.getByPhone(phone: String)
 POST    /user/getByEmailAndPassword             controllers.users.UserController.getByEmailAndPassword()

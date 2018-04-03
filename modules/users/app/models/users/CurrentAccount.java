@@ -10,7 +10,7 @@ public class CurrentAccount {
     public Long id;
 
     @Constraints.Required
-    public Long userId;
+    public Long user;
 
     @Constraints.Required
     @Constraints.MaxLength(255)

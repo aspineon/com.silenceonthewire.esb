@@ -67,7 +67,7 @@ public class AccountRepository {
         return supplyAsync(() -> {
 
             try {
-                ebeanServer.insert(account);
+                account.save();
                 return ebeanServer.find(Account.class).setId(account.id).findOneOrEmpty();
             } catch (Exception e){
 
@@ -91,7 +91,7 @@ public class AccountRepository {
                     transaction.end();
                     return optionalAccount;
                 }
-                ebeanServer.update(account);
+                account.update();
                 transaction.commit();
                 optionalAccount = Optional.of(account);
                 transaction.end();

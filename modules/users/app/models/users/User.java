@@ -38,11 +38,9 @@ public class User extends BaseModel {
     @Constraints.Required
     public boolean isAdmin;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     public Company company;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    public Account account;
 
     public void setPassword(String password) {
         this.password = getSha512(password);

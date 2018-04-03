@@ -20,7 +20,7 @@ public class NewAccountToAccountConverter implements Function<NewAccount, Accoun
         account.createdAt = new Date();
         account.updatedAt = new Date();
 
-        account.user = finder.byId(newAccount.userId);
+        account.user = finder.byId(newAccount.user);
 
         account.ssn = newAccount.ssn;
         account.taxNumber = newAccount.taxNumber;

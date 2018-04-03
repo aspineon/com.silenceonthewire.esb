@@ -8,11 +8,8 @@ import models.users.Company;
 import models.users.CurrentCompany;
 import models.users.CurrentCompanyToCompanyCoverter;
 import models.users.NewCompany;
-import parsers.users.CurrentCompanyParser;
-import parsers.users.NewCompanyParser;
 import play.Logger;
 import play.libs.Json;
-import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import protocols.users.CompanyAction;
@@ -50,10 +47,7 @@ public class CompanyController extends Controller {
                     .thenApply(
                             list -> ok(
                                     Json.toJson(
-                                            list.stream().map(companyToCompanyConverter).collect(Collectors.toList())
-                                    )
-                            )
-                    );
+                                            list.stream().map(companyToCompanyConverter).collect(Collectors.toList()))));
         } catch (Exception e) {
 
             Logger.error(e.getMessage(), e);
@@ -68,7 +62,8 @@ public class CompanyController extends Controller {
             return PatternsCS.ask(actorRef, new CompanyProtocol(CompanyAction.GET_BY_ID, id), 1000)
                     .thenApply(response -> (Optional<Company>) response).thenApply(
                             optionalCompany -> optionalCompany.map(companyToCompanyConverter).map(
-                                    currentCompany -> ok(Json.toJson(currentCompany))).orElse(notFound()));
+                                    currentCompany -> ok(Json.toJson(currentCompany)))
+                                    .orElse(notFound()));
         } catch (Exception e) {
 
             Logger.error(e.getMessage(), e);
@@ -83,7 +78,8 @@ public class CompanyController extends Controller {
             return PatternsCS.ask(actorRef, new CompanyProtocol(CompanyAction.GET_BY_NAME, name), 1000)
                     .thenApply(response -> (Optional<Company>) response).thenApply(
                             optionalCompany -> optionalCompany.map(companyToCompanyConverter).map(
-                                    currentCompany -> ok(Json.toJson(currentCompany))).orElse(notFound()));
+                                    currentCompany -> ok(Json.toJson(currentCompany)))
+                                    .orElse(notFound()));
         } catch (Exception e){
 
             Logger.error(e.getMessage(), e);
@@ -98,7 +94,8 @@ public class CompanyController extends Controller {
             return PatternsCS.ask(actorRef, new CompanyProtocol(CompanyAction.GET_BY_EMAIL, email), 1000)
                     .thenApply(response -> (Optional<Company>) response).thenApply(
                             optionalCompany -> optionalCompany.map(companyToCompanyConverter).map(
-                                    currentCompany -> ok(Json.toJson(currentCompany))).orElse(notFound()));
+                                    currentCompany -> ok(Json.toJson(currentCompany)))
+                                    .orElse(notFound()));
         } catch (Exception e) {
 
             Logger.error(e.getMessage(), e);
@@ -113,7 +110,8 @@ public class CompanyController extends Controller {
             return PatternsCS.ask(actorRef, new CompanyProtocol(CompanyAction.GET_BY_PHONE, phone), 1000)
                     .thenApply(response -> (Optional<Company>) response).thenApply(
                             optionalCompany -> optionalCompany.map(companyToCompanyConverter).map(
-                                    currentCompany -> ok(Json.toJson(currentCompany))).orElse(notFound()));
+                                    currentCompany -> ok(Json.toJson(currentCompany)))
+                                    .orElse(notFound()));
         } catch (Exception e){
 
             Logger.error(e.getMessage(), e);
@@ -128,7 +126,8 @@ public class CompanyController extends Controller {
             return PatternsCS.ask(actorRef, new CompanyProtocol(CompanyAction.GET_BY_TAX_NUMBER, taxNumber), 1000)
                     .thenApply(response -> (Optional<Company>) response).thenApply(
                             optionalCompany -> optionalCompany.map(companyToCompanyConverter).map(
-                                    currentCompany ->ok(Json.toJson(currentCompany))).orElse(notFound()));
+                                    currentCompany ->ok(Json.toJson(currentCompany)))
+                                    .orElse(notFound()));
         } catch (Exception e) {
 
             Logger.error(e.getMessage(), e);
@@ -136,7 +135,6 @@ public class CompanyController extends Controller {
         }
     }
 
-    @BodyParser.Of(NewCompanyParser.class)
     public CompletionStage<Result> add(){
 
         try {
@@ -147,7 +145,8 @@ public class CompanyController extends Controller {
             return PatternsCS.ask(actorRef, new CompanyProtocol(CompanyAction.ADD, company), 1000)
                     .thenApply(response -> (Optional<Company>) response).thenApply(
                             optionalResponse -> optionalResponse.map(companyToCompanyConverter).map(
-                                    currentCompany -> ok(Json.toJson(currentCompany))).orElse(badRequest()));
+                                    currentCompany -> ok(Json.toJson(currentCompany)))
+                                    .orElse(badRequest()));
         } catch (Exception e) {
 
             Logger.error(e.getMessage(), e);
@@ -155,7 +154,6 @@ public class CompanyController extends Controller {
         }
     }
 
-    @BodyParser.Of(CurrentCompanyParser.class)
     public CompletionStage<Result> update(){
 
         try {
@@ -163,10 +161,11 @@ public class CompanyController extends Controller {
             CurrentCompany jsonCompany = Json.fromJson(request().body().asJson(), CurrentCompany.class);
             Company company = new CurrentCompanyToCompanyCoverter().apply(jsonCompany);
 
-            return PatternsCS.ask(actorRef, new CompanyProtocol(CompanyAction.ADD, company), 1000)
+            return PatternsCS.ask(actorRef, new CompanyProtocol(CompanyAction.EDIT, company), 1000)
                     .thenApply(response -> (Optional<Company>) response).thenApply(
                             optionalResponse -> optionalResponse.map(companyToCompanyConverter).map(
-                                    currentCompany -> ok(Json.toJson(currentCompany))).orElse(badRequest()));
+                                    currentCompany -> ok(Json.toJson(currentCompany)))
+                                    .orElse(badRequest()));
         } catch (Exception e){
 
             Logger.error(e.getMessage(), e);
@@ -180,7 +179,8 @@ public class CompanyController extends Controller {
             return PatternsCS.ask(actorRef, new CompanyProtocol(CompanyAction.DELETE, id), 1000)
                     .thenApply(response -> (Optional<Company>) response).thenApply(
                             optionalCompany -> optionalCompany.map(companyToCompanyConverter).map(
-                                    currentCompany -> ok(Json.toJson(currentCompany))).orElse(notFound()));
+                                    currentCompany -> ok(Json.toJson(currentCompany)))
+                                    .orElse(notFound()));
         } catch (Exception e){
 
             Logger.error(e.getMessage(), e);
