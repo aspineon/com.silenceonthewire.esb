@@ -1,7 +1,0 @@
-package protocols.users;
-
-public enum Action {
-
-    ADD_USER, EDIT_USER, DELETE_USER, GET_BY_ID, GET_BY_EMAIL, GET_BY_PHONE,
-    GET_BY_EMAIL_AND_PASSWORD, GET_BY_PHONE_AND_PASSWORD, GET_ALL
-}

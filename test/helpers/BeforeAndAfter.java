@@ -23,7 +23,7 @@ public class BeforeAndAfter {
         running(fakeApplication(inMemoryDatabase("test")), () -> {
 
             database = Databases.inMemory(
-                    "mydatabase",
+                    "test",
                     ImmutableMap.of(
                             "MODE", "MYSQL"
                     ),

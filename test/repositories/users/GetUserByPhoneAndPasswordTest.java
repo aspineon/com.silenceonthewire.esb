@@ -1,9 +1,16 @@
 package repositories.users;
 
+import com.google.common.collect.ImmutableMap;
+import defaultData.DefaultCompanies;
 import defaultData.DefaultUsers;
 import models.users.PhoneAndPassword;
 import models.users.User;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import play.db.Database;
+import play.db.Databases;
+import play.db.evolutions.Evolutions;
 import play.test.WithApplication;
 
 import java.util.Optional;
@@ -18,6 +25,7 @@ import static play.test.Helpers.running;
 
 public class GetUserByPhoneAndPasswordTest extends WithApplication {
 
+    private DefaultCompanies defaultCompanies = new DefaultCompanies();
     private DefaultUsers defaultUsers = new DefaultUsers();
 
     private String existsPhone = "000000000";
@@ -26,12 +34,44 @@ public class GetUserByPhoneAndPasswordTest extends WithApplication {
     private String existsPassword = "R3v3l@t104LoA";
     private String notExistsPassword = "R3v3l@t104LoA1";
 
+    Database database;
+
+    @Before
+    public void setUp() throws Exception {
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            database = Databases.inMemory(
+                    "test",
+                    ImmutableMap.of(
+                            "MODE", "MYSQL"
+                    ),
+                    ImmutableMap.of(
+                            "logStatements", true
+                    )
+            );
+            Evolutions.applyEvolutions(database);
+
+            defaultCompanies.createCompanies();
+            defaultUsers.createUsers();
+        });
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        running(fakeApplication(inMemoryDatabase("test")), () -> {
+
+            defaultUsers.deleteUsers();
+            defaultCompanies.deleteCompanies();
+
+            Evolutions.cleanupEvolutions(database);
+            database.shutdown();
+        });
+    }
+
     @Test
     public void getUserThroughExistingPhoneAndPasswordTest(){
 
         running(fakeApplication(inMemoryDatabase("test")), () -> {
-
-            defaultUsers.createUsers();
 
             PhoneAndPassword phoneAndPassword = new PhoneAndPassword();
             phoneAndPassword.phone = existsPhone;
@@ -47,8 +87,6 @@ public class GetUserByPhoneAndPasswordTest extends WithApplication {
                     return currentUser.isPresent();
                 });
             });
-
-            defaultUsers.deleteUsers();
         });
     }
 
@@ -56,8 +94,6 @@ public class GetUserByPhoneAndPasswordTest extends WithApplication {
     public void getUserThroughNotExistingPhoneAndExistingPasswordTest(){
 
         running(fakeApplication(inMemoryDatabase("test")), () -> {
-
-            defaultUsers.createUsers();
 
             PhoneAndPassword phoneAndPassword = new PhoneAndPassword();
             phoneAndPassword.phone = notExistsPhone;
@@ -73,8 +109,6 @@ public class GetUserByPhoneAndPasswordTest extends WithApplication {
                     return !currentUser.isPresent();
                 });
             });
-
-            defaultUsers.deleteUsers();
         });
     }
 
@@ -82,8 +116,6 @@ public class GetUserByPhoneAndPasswordTest extends WithApplication {
     public void getUserThroughExitingPhoneAndNotExistingPasswordTest(){
 
         running(fakeApplication(inMemoryDatabase("test")), () -> {
-
-            defaultUsers.createUsers();
 
             PhoneAndPassword phoneAndPassword = new PhoneAndPassword();
             phoneAndPassword.phone = existsPhone;
@@ -99,8 +131,6 @@ public class GetUserByPhoneAndPasswordTest extends WithApplication {
                     return !currentUser.isPresent();
                 });
             });
-
-            defaultUsers.deleteUsers();
         });
     }
 }

@@ -1,12 +1,16 @@
 package defaultData;
 
 import io.ebean.Finder;
+import models.users.Company;
 import models.users.User;
 
 import java.util.Date;
 import java.util.List;
 
 public class DefaultUsers {
+
+    private Long firstCompanyId = 1L;
+    private Long secondCompanyId = 2L;
 
     private Long    firstId             = 1L;
     private String  firstEmail          = "john@doe.com";
@@ -25,8 +29,8 @@ public class DefaultUsers {
 
     public void createUsers(){
 
-        createUser(this.firstId, this.firstEmail, this.firstPhone, this.firstPassword, this.isAdmin);
-        createUser(this.secondId, this.secondEmail, this.secondPhone, this.secondPassword, this.isAdmin);
+        createUser(this.firstCompanyId, this.firstId, this.firstEmail, this.firstPhone, this.firstPassword, this.isAdmin);
+        createUser(this.secondCompanyId, this.secondId, this.secondEmail, this.secondPhone, this.secondPassword, this.isAdmin);
     }
 
     public void deleteUsers(){
@@ -36,13 +40,16 @@ public class DefaultUsers {
         users.forEach(user -> user.delete());
     }
 
-    public void createUser(Long id, String email, String phone, String password, boolean isAdmin){
+    public void createUser(Long companyId, Long id, String email, String phone, String password, boolean isAdmin){
+
+        Finder<Long, Company> finder = new Finder<Long, Company>(Company.class);
 
         User userModel = new User();
 
         userModel.id = id;
         userModel.createdAt = new Date();
         userModel.updatedAt = new Date();
+        userModel.company = finder.byId(companyId);
         userModel.firstName = this.firstName;
         userModel.lastName = this.lastName;
         userModel.phone = phone;

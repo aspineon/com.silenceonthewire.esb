@@ -1,6 +1,11 @@
 import com.google.inject.AbstractModule;
 import java.time.Clock;
 
+import io.ebean.EbeanServerFactory;
+import io.ebean.config.ServerConfig;
+import org.avaje.datasource.DataSourceConfig;
+import com.typesafe.config.Config;
+import play.Environment;
 import services.ApplicationTimer;
 import services.AtomicCounter;
 import services.Counter;
@@ -17,6 +22,17 @@ import services.Counter;
  */
 public class Module extends AbstractModule {
 
+    private final Environment environment;
+    private final Config config;
+
+    public Module(
+            Environment environment,
+            Config config
+    ) {
+        this.environment = environment;
+        this.config = config;
+    }
+
     @Override
     public void configure() {
         // Use the system clock as the default implementation of Clock
@@ -26,6 +42,17 @@ public class Module extends AbstractModule {
         bind(ApplicationTimer.class).asEagerSingleton();
         // Set AtomicCounter as the implementation for Counter.
         bind(Counter.class).to(AtomicCounter.class);
+
+        ServerConfig ebeanConfig = new ServerConfig();
+        DataSourceConfig db = new DataSourceConfig();
+        db.setDriver(config.getString("db.default.driver"));
+        db.setUsername(config.getString("db.default.username"));
+        db.setPassword(config.getString("db.default.password"));
+        db.setUrl(config.getString("db.default.url"));
+
+        ebeanConfig.setDefaultServer(true);
+        ebeanConfig.setDataSourceConfig(db);
+        EbeanServerFactory.create(ebeanConfig);
     }
 
 }

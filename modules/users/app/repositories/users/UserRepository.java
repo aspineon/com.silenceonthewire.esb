@@ -3,6 +3,7 @@ package repositories.users;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Transaction;
+import models.users.Company;
 import models.users.EmailAndPassword;
 import models.users.PhoneAndPassword;
 import models.users.User;
@@ -62,6 +63,9 @@ public class UserRepository {
                 ebeanServer.update(user);
                 txn.commit();
                 optionalUser = ebeanServer.find(User.class).setId(user.id).findOneOrEmpty();
+            } catch (Exception e){
+
+                Logger.error(e.getMessage(), e);
             } finally {
 
                 txn.end();
@@ -76,9 +80,8 @@ public class UserRepository {
             Optional<User> userOptional = ebeanServer.find(User.class).setId(id).findOneOrEmpty();
             if(userOptional.isPresent()) {
                 ebeanServer.delete(userOptional.get());
-                return userOptional;
             }
-            return Optional.empty();
+            return userOptional;
         }, executionContext);
     }
 
@@ -122,5 +125,20 @@ public class UserRepository {
             return ebeanServer.find(User.class).where().eq("phone", phoneAndPassword.phone)
                     .eq("password", User.getSha512(phoneAndPassword.password)).findOneOrEmpty();
         });
+    }
+
+    public CompletionStage<List<User>> getUsersByCompany(Long id){
+
+        return supplyAsync(() -> {
+
+            Optional<Company> optionalCompany = ebeanServer.find(Company.class).setId(id).findOneOrEmpty();
+            if(optionalCompany.isPresent()){
+
+                return ebeanServer.find(User.class).where().eq("company", optionalCompany.get()).findList();
+            } else {
+
+                return null;
+            }
+        }, executionContext);
     }
 }

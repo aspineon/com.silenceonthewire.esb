@@ -14,7 +14,8 @@ import repositories.users.*;
         GetUserByEmailTest.class,
         GetUserByPhoneTest.class,
         GetUserByEmailAndPasswordTest.class,
-        GetUserByPhoneAndPasswordTest.class
+        GetUserByPhoneAndPasswordTest.class,
+        GetUsersByCompanyTest.class
 })
 public class UserTestSuite {
 

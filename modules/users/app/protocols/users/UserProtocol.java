@@ -7,7 +7,7 @@ import models.users.User;
 
 public class UserProtocol {
 
-    private Action action;
+    private UserAction userAction;
     private User user;
     private Long id;
     private String userdata;
@@ -15,55 +15,55 @@ public class UserProtocol {
     private EmailAndPassword emailAndPassword;
     private PhoneAndPassword phoneAndPassword;
 
-    public UserProtocol(Action action){
+    public UserProtocol(UserAction userAction){
 
-        this.action = action;
+        this.userAction = userAction;
     }
 
-    public UserProtocol(Action action, Long id){
+    public UserProtocol(UserAction userAction, Long id){
 
-        this.action = action;
+        this.userAction = userAction;
         this.id = id;
     }
 
-    public UserProtocol(Action action, String userdata){
+    public UserProtocol(UserAction userAction, String userdata){
 
-        this.action = action;
+        this.userAction = userAction;
         this.userdata = userdata;
     }
 
-    public UserProtocol(Action action, User user){
+    public UserProtocol(UserAction userAction, User user){
 
-        this.action = action;
+        this.userAction = userAction;
         this.user = user;
     }
 
-    public UserProtocol(Action action, NewUser newUser){
+    public UserProtocol(UserAction userAction, NewUser newUser){
 
-        this.action = action;
+        this.userAction = userAction;
         this.newUser = newUser;
     }
 
-    public UserProtocol(Action action, EmailAndPassword emailAndPassword){
+    public UserProtocol(UserAction userAction, EmailAndPassword emailAndPassword){
 
-        this.action = action;
+        this.userAction = userAction;
         this.emailAndPassword = emailAndPassword;
     }
 
-    public UserProtocol(Action action, PhoneAndPassword phoneAndPassword){
+    public UserProtocol(UserAction userAction, PhoneAndPassword phoneAndPassword){
 
-        this.action = action;
+        this.userAction = userAction;
         this.phoneAndPassword = phoneAndPassword;
     }
-    public UserProtocol(Action action, Long id, NewUser newUser){
+    public UserProtocol(UserAction userAction, Long id, NewUser newUser){
 
-        this.action = action;
+        this.userAction = userAction;
         this.id = id;
         this.newUser = newUser;
     }
 
-    public Action getAction() {
-        return action;
+    public UserAction getUserAction() {
+        return userAction;
     }
 
     public User getUser() {

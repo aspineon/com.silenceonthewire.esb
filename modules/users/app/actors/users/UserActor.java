@@ -29,7 +29,7 @@ public class UserActor extends AbstractActor {
     public Receive createReceive() {
         return receiveBuilder().match(UserProtocol.class, userProtocol -> {
 
-            switch (userProtocol.getAction()){
+            switch (userProtocol.getUserAction()){
 
                 case ADD_USER:
                     sender().tell(addUser(userProtocol.getNewUser()), self());
@@ -58,6 +58,8 @@ public class UserActor extends AbstractActor {
                 case GET_BY_PHONE_AND_PASSWORD:
                     sender().tell(getUserByPhoneAndPassword(userProtocol.getPhoneAndPassword()), self());
                     break;
+                case GET_BY_COMPANY:
+                    sender().tell(getUsersByCompany(userProtocol.getId()), self());
             }
         }).matchAny(any -> unhandled("unhandled" + any.getClass())).build();
     }
@@ -186,6 +188,18 @@ public class UserActor extends AbstractActor {
 
             Logger.error(e.getMessage(), e);
             return Optional.empty();
+        }
+    }
+
+    private List<User> getUsersByCompany(Long id){
+
+        try {
+
+            return userRepository.getUsersByCompany(id).toCompletableFuture().get();
+        } catch (Exception e){
+
+            Logger.error(e.getMessage(), e);
+            return null;
         }
     }
 }
