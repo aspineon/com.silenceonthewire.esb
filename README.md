@@ -16,52 +16,6 @@ And then go to http://localhost:9000 to see the running web application.
 
 # Api elements
 
-## Users
+Full dokumentation is available here:
 
-### Add new user
-
-```
-curl -H "Content-Type: application/json" -X POST -d '{"firstName":"Janek","lastName":"Kowalski","email": "jan@kowalski.pl", "phone":"1", "password": "alpha", "isAdmin": "true"}' http://localhost:9000/api/v1/users/add
-```
-
-### Update user
-
-```
-curl -H "Content-Type: application/json" -X PUT -d '{"id": 1, "firstName":"Janek","lastName":"Kowalski","email":"janek1@kowalsk1i.pl", "phone":"12", "password": "alpha", "isAdmin": true}' http://localhost:9000/api/v1/users/edit/1
-```
-
-### Get all users
-
-```
-curl http://localhost:9000/api/v1/users/all
-```
-
-### Get user by e-mail
-
-```
-curl http://localhost:9000/api/v1/users/getByEmail/janek1@kowalski.pl
-```
-
-### Get user by phone
-
-```
-curl http://localhost:9000/api/v1/users/getByPhone/1
-```
-
-### Get user by email and password
-
-```
-curl -H "Content-Type: application/json" -X POST -d '{"email":"janek1@kowalsk1i.pl", "password": "alpha"}' http://localhost:9000/api/v1/users/getByEmailAndPassword
-```
-
-### GET user by phone and password
-
-```
-curl -H "Content-Type: application/json" -X POST -d '{"phone":"1", "password": "alpha"}' http://localhost:9000/api/v1/users/getByPhoneAndPassword
-```
-
-### Delete user
-
-```
-curl -H "Content-Type: application/json" -X DELETE http://localhost:9000/api/v1/users/delete/1
-```
+[https://silenceonthewire.github.io](https://silenceonthewire.github.io)
