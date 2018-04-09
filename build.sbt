@@ -1,34 +1,71 @@
-name := """com.silenceonthewire.esb"""
+organization in ThisBuild := "com.example"
+version in ThisBuild := "1.1-SNAPSHOT"
 
-version := "1.1.0-usable-user-alpha-SNAPSHOT"
+// the Scala version that will be used for cross-compiled libraries
+scalaVersion in ThisBuild := "2.12.4"
 
-lazy val core = (project in file("modules/core")).enablePlugins(PlayJava, PlayEbean)
-lazy val users = (project in file("modules/users")).enablePlugins(PlayJava, PlayEbean)
-lazy val root = (project in file(".")).enablePlugins(PlayJava).dependsOn(core, users).aggregate(core, users)
+lazy val `company` = (project in file("."))
+  .aggregate(`exception-api`, `type-api`, `type-impl`, `company-api`, `company-impl`)
 
-scalaVersion := "2.12.4"
+lazy val `type-api` = (project in file("type-api"))
+  .settings(common: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      lagomJavadslApi,
+      lombok
+    )
+  ).dependsOn(`exception-api`)
 
-crossScalaVersions := Seq("2.11.12", "2.12.4")
+lazy val `type-impl` = (project in file("type-impl"))
+  .enablePlugins(LagomJava)
+  .settings(common: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      lagomJavadslPersistenceCassandra,
+      lagomJavadslKafkaBroker,
+      lagomLogback,
+      lagomJavadslTestKit,
+      lombok
+    )
+  )
+  .settings(lagomForkedTestSettings: _*)
+  .dependsOn(`type-api`)
 
-libraryDependencies += guice
+lazy val `company-api` = (project in file("company-api"))
+  .settings(common: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      lagomJavadslApi,
+      lombok
+    )
+  ).dependsOn(`exception-api`)
 
-// Test Database
-libraryDependencies += "com.h2database" % "h2" % "1.4.196"
+lazy val `exception-api` = (project in file("exception-api"))
+  .settings(common: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      lagomJavadslApi,
+      lombok
+    )
+  )
 
-libraryDependencies += javaJdbc
+lazy val `company-impl` = (project in file("company-impl"))
+  .enablePlugins(LagomJava)
+  .settings(common: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      lagomJavadslPersistenceCassandra,
+      lagomJavadslKafkaBroker,
+      lagomLogback,
+      lagomJavadslTestKit,
+      lombok
+    )
+  )
+  .settings(lagomForkedTestSettings: _*)
+  .dependsOn(`company-api`)
 
-libraryDependencies += ws
-libraryDependencies += ehcache
+val lombok = "org.projectlombok" % "lombok" % "1.16.18"
 
-libraryDependencies += jdbc
-libraryDependencies += evolutions
-
-// Testing libraries for dealing with CompletionStage...
-libraryDependencies += "org.assertj" % "assertj-core" % "3.6.2" % Test
-libraryDependencies += "org.awaitility" % "awaitility" % "2.0.0" % Test
-
-libraryDependencies += "javax.el" % "javax.el-api" % "3.0.0"
-libraryDependencies += "org.glassfish.web" % "javax.el" % "2.2.6"
-
-// Make verbose tests
-testOptions in Test := Seq(Tests.Argument(TestFrameworks.JUnit, "-a", "-v"))
+def common = Seq(
+  javacOptions in compile += "-parameters"
+)
